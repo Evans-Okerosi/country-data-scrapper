@@ -9,20 +9,7 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const app = express();
 
-function getData() {
-    scrapper
-        .fetchData(URL)
-        .then(countries => {})
-        .catch(error => console.log(error));
-}
 
-function saveToDB(data) {
-    db.get("countries")
-        .push(...data)
-        .write();
-    // update db count
-    db.update("count", n => n + 1);
-}
 
 let countries = db.get("countries").value();
 
@@ -31,8 +18,32 @@ const PORT = 8080;
 app.use(express.static(path.join(__dirname, `build`)));
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.get("/", (req, res) =>
+    res.sendFile(path.join(__dirname, "dist/index.html"))
+);
+
 app.get("/countries", (req, res) => {
-    res.json(countries)
+    res.json(countries);
+});
+
+app.get("/refresh", (req, res) => {
+    scrapper.getData(URL).then(data => {
+        db.get("countries")
+            .push(...data)
+            .write();
+        // update db count
+        db.update("count", n => n + 1);
+    });
+});
+app.post("/delete", (req, res) => {
+    const newState = {
+        countries: [],
+        count: 0
+    };
+    db.setState(newState);
+    db.write()
+        .then(() => res.sendStatus(200))
+        .catch(() => res.sendStatus(500));
 });
 
 app.listen(PORT, () => console.log(`app is running on port ${PORT}`));
