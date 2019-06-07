@@ -1,4 +1,4 @@
-#country-data-scrapper
+# country-data-scrapper
 
 This is a web scrapper for [https://scrapethissite.com/pages/simple/]. scrapthissite is a website where
 beginners are given challenges so that they can learn `web scrapping`. The simple webpage above contains
@@ -6,7 +6,7 @@ data about countries that the learner is expected to extract.
 
 This app uses puppeteer [https://pptr.dev/] to extract data from the site, nodejs and express for the backend with react in the front end.
 
-##Getting started
+## Getting started
 move into the project directory:
 `cd countries-data-scraper`
 
